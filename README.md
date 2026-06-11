@@ -1,1 +1,879 @@
-Bienvenidos
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ejecutivo - Faith Security</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (XLSX) CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-100 flex flex-col md:flex-row antialiased">
+
+    <!-- Sidebar de Navegación -->
+    <aside class="w-full md:w-64 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col shrink-0 transition-all duration-300">
+        <!-- Header Sidebar -->
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">FS</div>
+                <div>
+                    <h1 class="font-bold text-sm tracking-tight text-white">FAITH SECURITY</h1>
+                    <p class="text-[11px] text-indigo-400 font-medium">Hunter Douglas Dashboard</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Links de Navegación -->
+        <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+            <button onclick="switchTab('resumen')" id="btn-resumen" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-indigo-600 text-white shadow-md shadow-indigo-600/10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"/></svg>
+                <span>Resumen Ejecutivo</span>
+            </button>
+            <button onclick="switchTab('incidentes')" id="btn-incidentes" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span>Análisis de Incidentes</span>
+            </button>
+            <button onclick="switchTab('logistica')" id="btn-logistica" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M21 16v-4a5 5 0 00-4-4h-3V5a2 2 0 00-2-2H3a2 2 0 00-2 2v11m12-4h8"/></svg>
+                <span>Logística y Flujos</span>
+            </button>
+            <button onclick="switchTab('cctv')" id="btn-cctv" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <span>Infraestructura CCTV</span>
+            </button>
+            <button onclick="switchTab('preventivo')" id="btn-preventivo" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <span>Hallazgos Preventivos</span>
+            </button>
+            <button onclick="switchTab('dinamico')" id="btn-dinamico" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-dashed border-slate-700/50 mt-4">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                <span class="text-emerald-400">BI Data Center (.xlsx)</span>
+            </button>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50 text-xs text-slate-500 space-y-1">
+            <div>Actualizado: 11 de Junio, 2026</div>
+            <div>Jefe Operacional: Alex Tolero</div>
+            <div>Supervisor: Kevin Cavieres</div>
+        </div>
+    </aside>
+
+    <!-- Contenedor Principal Principal -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar flex flex-col min-w-0 bg-slate-950">
+        <!-- Header Global Superior -->
+        <header class="h-16 border-b border-slate-800/80 bg-slate-900/40 px-6 flex items-center justify-between sticky top-0 backdrop-blur-md z-40">
+            <div class="flex items-center gap-4">
+                <h2 id="page-title" class="text-base font-semibold text-white tracking-tight">Resumen Ejecutivo</h2>
+            </div>
+            <!-- Acciones Rápidas Globales -->
+            <div class="flex items-center gap-3">
+                <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-lg text-slate-200 transition-all flex items-center gap-1.5 border border-slate-700">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    PDF
+                </button>
+                <button onclick="exportarExcelEstatico()" class="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-xs font-medium rounded-lg text-indigo-400 transition-all flex items-center gap-1.5 border border-indigo-500/30">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Excel Master
+                </button>
+            </div>
+        </header>
+
+        <!-- Zona de Contenidos por Pestaña -->
+        <div class="p-6 space-y-6 max-w-[1600px] w-full mx-auto flex-1">
+
+            <!-- TAB 1: RESUMEN EJECUTIVO -->
+            <section id="tab-resumen" class="tab-content space-y-6">
+                <!-- Grid de KPI Cards Clásicos Estilo Power BI -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-all duration-300">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase">Guardias Totales</p>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <span class="text-3xl font-bold text-white tracking-tight">08</span>
+                            <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">100% Dotación</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">Operando bajo estrictos estándares</p>
+                    </div>
+                    <!-- KPI 2 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-all duration-300">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase">Vigilancia Diaria</p>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <span class="text-3xl font-bold text-white tracking-tight">8</span>
+                            <span class="text-xs font-medium text-slate-300">Rondas Activas</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">4 Turno Día / 4 Turno Noche</p>
+                    </div>
+                    <!-- KPI 3 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-all duration-300">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-violet-500"></div>
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase">Cámaras Operativas</p>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <span class="text-3xl font-bold text-white tracking-tight">51</span>
+                            <span class="text-xs font-medium text-amber-400">40 Fuera de Serv.</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">Disponibilidad de red global: 56%</p>
+                    </div>
+                    <!-- KPI 4 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm relative overflow-hidden group hover:border-slate-700 transition-all duration-300">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
+                        <p class="text-xs font-medium text-slate-400 tracking-wider uppercase">Incidentes Totales</p>
+                        <div class="flex items-baseline gap-2 mt-2">
+                            <span class="text-3xl font-bold text-white tracking-tight">10</span>
+                            <span class="text-xs font-medium text-rose-400">Acumulado 25/26</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">Mayor prevalencia: Alarmas y Ambulancias</p>
+                    </div>
+                </div>
+
+                <!-- Segunda hilera de KPIs específicos -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Flujo Logístico Promedio</p>
+                            <h3 class="text-2xl font-bold text-white mt-1">175 <span class="text-xs font-normal text-slate-400">Camiones/mes</span></h3>
+                        </div>
+                        <div class="p-2.5 bg-slate-800 rounded-lg text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tecnología Bodycams</p>
+                            <h3 class="text-2xl font-bold text-white mt-1">4 <span class="text-xs font-normal text-slate-400">Unidades</span></h3>
+                        </div>
+                        <div class="p-2.5 bg-slate-800 rounded-lg text-cyan-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between col-span-2 md:col-span-1">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Hallazgos Preventivos</p>
+                            <h3 class="text-2xl font-bold text-white mt-1">2 <span class="text-xs font-normal text-slate-400">Objetos Recup.</span></h3>
+                        </div>
+                        <div class="p-2.5 bg-slate-800 rounded-lg text-emerald-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fila de Acceso Directo de Reportes / Insights Breves -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">Diagnóstico Operacional General</h3>
+                    <div class="text-sm text-slate-400 leading-relaxed space-y-2">
+                        <p>• <strong class="text-white">Infraestructura Crítica:</strong> Se detecta un foco crítico de vulnerabilidad en la cobertura de CCTV, particularmente en el <span class="text-amber-400 font-medium">DVR N°2</span> que presenta un <span class="text-rose-400 font-medium">66% de inoperatividad</span> (18 de 27 cámaras caídas por fallos de red).</p>
+                        <p>• <strong class="text-white">Seguridad Física:</strong> La dotación se mantiene al 100% con un protocolo estricto de rondas apoyado por bodycams, lo cual contrarresta los puntos ciegos tecnológicos actuales.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: INCIDENTES -->
+            <section id="tab-incidentes" class="tab-content space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Tarjeta de Gráfico -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 lg:col-span-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-semibold text-white mb-1">Distribución de Incidentes</h3>
+                            <p class="text-xs text-slate-400 mb-6">Muestra acumulada de eventos del periodo 2025 - 2026</p>
+                        </div>
+                        <div class="relative w-full max-w-[240px] mx-auto my-4">
+                            <canvas id="chartIncidentes"></canvas>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-slate-400 mt-4 pt-4 border-t border-slate-800">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                                <span>Ambulancia (3)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span>
+                                <span>Alarmas (3)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                                <span>Objetos (2)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+                                <span>Robos (1)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Detalle Comparativo -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 lg:col-span-2 flex flex-col">
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold text-white">Histórico y Comparativa de Gestión</h3>
+                            <p class="text-xs text-slate-400">Desglose anual comparativo entre la Gestión 2025 y la Gestión 2026</p>
+                        </div>
+                        <div class="overflow-x-auto flex-1 custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider">
+                                        <th class="py-3 px-4 font-semibold">Categoría de Incidente</th>
+                                        <th class="py-3 px-4 font-semibold text-center">Gestión 2025</th>
+                                        <th class="py-3 px-4 font-semibold text-center">Gestión 2026</th>
+                                        <th class="py-3 px-4 font-semibold text-center">Total Histórico</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                    <tr class="hover:bg-slate-800/30 transition-all">
+                                        <td class="py-3 px-4 font-medium text-white flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Incendio
+                                        </td>
+                                        <td class="py-3 px-4 text-center text-slate-500">0</td>
+                                        <td class="py-3 px-4 text-center font-semibold text-white">1</td>
+                                        <td class="py-3 px-4 text-center font-medium">1</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30 transition-all">
+                                        <td class="py-3 px-4 font-medium text-white flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Ambulancia
+                                        </td>
+                                        <td class="py-3 px-4 text-center">1</td>
+                                        <td class="py-3 px-4 text-center font-semibold text-white">2</td>
+                                        <td class="py-3 px-4 text-center font-medium text-amber-400">3</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30 transition-all">
+                                        <td class="py-3 px-4 font-medium text-white flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Alarmas
+                                        </td>
+                                        <td class="py-3 px-4 text-center">1</td>
+                                        <td class="py-3 px-4 text-center font-semibold text-white">2</td>
+                                        <td class="py-3 px-4 text-center font-medium text-indigo-400">3</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30 transition-all">
+                                        <td class="py-3 px-4 font-medium text-white flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Robos
+                                        </td>
+                                        <td class="py-3 px-4 text-center text-slate-500">0</td>
+                                        <td class="py-3 px-4 text-center font-semibold text-white">1</td>
+                                        <td class="py-3 px-4 text-center font-medium">1</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30 transition-all">
+                                        <td class="py-3 px-4 font-medium text-white flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Objetos Encontrados
+                                        </td>
+                                        <td class="py-3 px-4 text-center text-slate-500">0</td>
+                                        <td class="py-3 px-4 text-center font-semibold text-white">2</td>
+                                        <td class="py-3 px-4 text-center font-medium text-emerald-400">2</td>
+                                    </tr>
+                                    <tr class="bg-slate-900 font-bold border-t border-slate-700 text-white">
+                                        <td class="py-3 px-4">TOTAL GENERAL</td>
+                                        <td class="py-3 px-4 text-center text-slate-400">2</td>
+                                        <td class="py-3 px-4 text-center text-indigo-400">8</td>
+                                        <td class="py-3 px-4 text-center text-emerald-400">10</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LOGÍSTICA -->
+            <section id="tab-logistica" class="tab-content space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Flujo de Camiones -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white">Registro de Camiones (Ingresos)</h3>
+                                <p class="text-xs text-slate-400">Evolución mensual de flujo pesado</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-indigo-400 font-semibold bg-indigo-500/10 px-2 py-0.5 rounded">Promedio: 175</span>
+                            </div>
+                        </div>
+                        <div class="h-64 mt-4">
+                            <canvas id="chartCamiones"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Flujo de Proveedores -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white">Registro de Proveedores</h3>
+                                <p class="text-xs text-slate-400">Volumen mensual y estatus de tráfico</p>
+                            </div>
+                        </div>
+                        <div class="h-64 mt-4">
+                            <canvas id="chartProveedores"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos tabulares resumidos de Logística -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                    <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">Resumen de Métricas de Acceso Comercial</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Nov-25</p><p class="text-sm font-bold text-white mt-1">183 / 145</p></div>
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Dic-25</p><p class="text-sm font-bold text-white mt-1">197 / 145</p></div>
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Ene-26</p><p class="text-sm font-bold text-white mt-1">181 / 141</p></div>
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Feb-26</p><p class="text-sm font-bold text-white mt-1">177 / 129</p></div>
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Mar-26</p><p class="text-sm font-bold text-white mt-1">185 / 132</p></div>
+                        <div class="p-3 bg-slate-950/60 rounded-lg"><p class="text-[11px] text-slate-500 font-medium">Abr-26</p><p class="text-sm font-bold text-white mt-1">155 / 137</p></div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-3 italic text-right">* Formato de celda: Camiones / Proveedores registrados</p>
+                </div>
+            </section>
+
+            <!-- TAB 4: CCTV INFRAESTRUCTURA -->
+            <section id="tab-cctv" class="tab-content space-y-6 hidden">
+                <!-- Diagnóstico Macro Global -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-semibold text-white mb-1">Estado General CCTV</h3>
+                            <p class="text-xs text-slate-400 mb-4">Métricas unificadas de disponibilidad</p>
+                        </div>
+                        <div class="w-full max-w-[200px] mx-auto my-2">
+                            <canvas id="chartCCTVGlobal"></canvas>
+                        </div>
+                        <div class="space-y-2 text-xs mt-4">
+                            <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Cámaras Operativas</span><span class="text-emerald-400 font-bold">51 (56%)</span></div>
+                            <div class="flex justify-between py-1"><span class="text-slate-400">Fuera de Servicio</span><span class="text-rose-400 font-bold">40 (44%)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Diagnóstico DVR N°1 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-sm font-semibold text-white">Análisis DVR N°1</h3>
+                                <span class="text-[11px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-medium">42 OK / 22 Caídas</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">Puntos críticos fuera de servicio:</p>
+                            <div class="space-y-1.5 max-h-[180px] overflow-y-auto custom-scrollbar pr-1">
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-amber-500"><span class="text-slate-200 font-medium">D32: Oficinas TI</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-amber-500"><span class="text-slate-200 font-medium">D31: Sala Eléctrica TI</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D6: Bodega Persianas</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-amber-500"><span class="text-slate-200 font-medium">D56: Perímetro Almirante Riveros</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D15: Estacionamiento Principal</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D11: Acceso Norte</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D48: Bodega 20</span><span class="text-slate-400 bg-slate-800 px-1 py-0.2 rounded text-[10px]">En Negro</span></div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400">Recomendación: Limpieza y re-enfoque de ópticas.</div>
+                    </div>
+
+                    <!-- Diagnóstico DVR N°2 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-sm font-semibold text-white">Análisis DVR N°2</h3>
+                                <span class="text-[11px] bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded font-medium">9 OK / 18 Caídas</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">Puntos críticos fuera de servicio:</p>
+                            <div class="space-y-1.5 max-h-[180px] overflow-y-auto custom-scrollbar pr-1">
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-rose-500"><span class="text-slate-200 font-medium">D29: Oficina TI</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-rose-500"><span class="text-slate-200 font-medium">D31: Ingeniería 2° Piso</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-rose-500"><span class="text-slate-200 font-medium">D6: Portería Sur</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-rose-500"><span class="text-slate-200 font-medium">D23: Portería Sur 1 IP</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D1: Escalera Administrativo</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D22: Bodega MP 5</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                                <div class="flex items-center justify-between text-xs p-2 bg-slate-950/50 rounded border-l-2 border-slate-700"><span class="text-slate-400">D20: Portón 7</span><span class="text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded text-[10px]">Fallo Red</span></div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 text-[11px] text-amber-400">Alerta Técnica: Requiere revisión urgente de switches.</div>
+                    </div>
+                </div>
+
+                <!-- Plan de Acción Técnico Estilo Power BI Matrix -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-white mb-4">Matriz de Mitigación y Plan de Acción Técnico</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                            <h4 class="font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full bg-indigo-500"></span> DVR N°2 - Acciones de Red
+                            </h4>
+                            <ul class="space-y-2 text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-indigo-400 font-bold">1.</span>
+                                    <span>Revisión completa de cableado estructurado asociado a nodos críticos.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-indigo-400 font-bold">2.</span>
+                                    <span>Auditoría de switches y enlaces PoE en Portería Sur e Ingeniería.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                            <h4 class="font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full bg-cyan-500"></span> DVR N°1 - Acciones de Mantenimiento
+                            </h4>
+                            <ul class="space-y-2 text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-cyan-400 font-bold">1.</span>
+                                    <span>Limpieza profunda de carcasas y domos expuestos a polvo/intemperie.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-cyan-400 font-bold">2.</span>
+                                    <span>Re-enfoque óptico y calibración de software para la cámara D48 (Bodega 20).</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: HALLAZGOS PREVENTIVOS -->
+            <section id="tab-preventivo" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+                    <div>
+                        <h3 class="text-base font-semibold text-white">Análisis de Seguridad Preventiva</h3>
+                        <p class="text-xs text-slate-400">Acciones de control y mitigación proactiva en planta</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-5 bg-slate-950 rounded-xl border border-slate-800/80 flex gap-4">
+                            <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg h-fit">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h4 class="text-sm font-semibold text-white">Gestión de Objetos Extraviados</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Durante las rondas preventivas del periodo, se recuperaron <strong class="text-emerald-400">2 objetos extraviados</strong> en zonas comunes. Ambos elementos fueron resguardados y devueltos bajo un estricto protocolo de validación e inventario.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-slate-950 rounded-xl border border-slate-800/80 flex gap-4">
+                            <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-lg h-fit">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h4 class="text-sm font-semibold text-white">Medida Disuasiva: Bodycams</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    La implementación obligatoria de <strong class="text-indigo-400">4 Bodycams</strong> durante los patrullajes perimetrales ha demostrado ser una herramienta crucial de mitigación de riesgos, reduciendo conductas inapropiadas y blindando el registro de evidencias operacionales.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: DINÁMICO / BI DATA CENTER -->
+            <section id="tab-dinamico" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">BI Interactive Data Center</h3>
+                            <p class="text-xs text-slate-400">Cargue un archivo externo (.xlsx, .xls, .csv) para sobreescribir la matriz de datos y usar filtros dinámicos en tiempo real.</p>
+                        </div>
+                        
+                        <!-- Control de Carga de Archivos Moderno -->
+                        <div class="flex items-center gap-2">
+                            <label class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-2 shadow-md shadow-emerald-600/10">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12"/></svg>
+                                Subir Archivo
+                                <input type="file" id="uploadFile" accept=".xlsx, .xls, .csv" class="hidden" onchange="procesarArchivo(this)">
+                            </label>
+                            <button onclick="resetearDataDinamica()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-medium border border-slate-700 transition-all" title="Restaurar data demo">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H19M4 4a4.24 4.24 0 010 1.415M4 4h5"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Barra de Filtros Interactiva Power BI Style -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                        <!-- Búsqueda Global -->
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </span>
+                            <input type="text" id="busquedaGlobal" oninput="aplicarFiltrosDinamicos()" placeholder="Búsqueda global..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all">
+                        </div>
+
+                        <!-- Selector Filtro 1 -->
+                        <div>
+                            <select id="filtroModulo" onchange="aplicarFiltrosDinamicos()" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 transition-all">
+                                <option value="TODOS">Módulo: Todos</option>
+                                <option value="CCTV">CCTV</option>
+                                <option value="INCIDENTES">Incidentes</option>
+                                <option value="LOGÍSTICA">Logística</option>
+                            </select>
+                        </div>
+
+                        <!-- Selector Filtro 2 -->
+                        <div>
+                            <select id="filtroSeveridad" onchange="aplicarFiltrosDinamicos()" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 transition-all">
+                                <option value="TODOS">Severidad: Todas</option>
+                                <option value="CRÍTICO">Crítico</option>
+                                <option value="NORMAL">Normal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Matriz / Tabla Dinámica Principal -->
+                    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead id="tablaDinamicaHead" class="bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                    <!-- Generado dinámicamente -->
+                                </thead>
+                                <tbody id="tablaDinamicaBody" class="divide-y divide-slate-800/50 text-slate-300">
+                                    <!-- Generado dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Footer de paginación o conteo -->
+                        <div class="px-4 py-2 border-t border-slate-800 bg-slate-900/30 flex items-center justify-between text-[11px] text-slate-500">
+                            <span id="contadorFilas">Mostrando 0 registros</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="exportarExcelDinamico()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-medium border border-slate-700 transition-all">Exportar Tabla Actual (.xlsx)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- JavaScript del Dashboard -->
+    <script>
+        // Data Demo Inicial para la Tabla Dinámica Interactiva
+        const dataDemoInicial = [
+            { "ID": "FS-101", "MÓDULO": "CCTV", "INDICADOR": "D29: Oficina TI", "VALOR": "No Operativa", "SEVERIDAD": "CRÍTICO", "OBSERVACIÓN": "Fallo de red persistente" },
+            { "ID": "FS-102", "MÓDULO": "CCTV", "INDICADOR": "D31: Sala Eléctrica TI", "VALOR": "No Operativa", "SEVERIDAD": "CRÍTICO", "OBSERVACIÓN": "Requiere re-enfoque" },
+            { "ID": "FS-103", "MÓDULO": "INCIDENTES", "INDICADOR": "Ambulancia", "VALOR": "3 Eventos", "SEVERIDAD": "CRÍTICO", "OBSERVACIÓN": "Histórico consolidado" },
+            { "ID": "FS-104", "MÓDULO": "INCIDENTES", "INDICADOR": "Alarmas", "VALOR": "3 Eventos", "SEVERIDAD": "NORMAL", "OBSERVACIÓN": "Activaciones falsas controladas" },
+            { "ID": "FS-105", "MÓDULO": "LOGÍSTICA", "INDICADOR": "Flujo Camiones Mayo-26", "VALOR": "149 Ingresos", "SEVERIDAD": "NORMAL", "OBSERVACIÓN": "Baja en último trimestre" },
+            { "ID": "FS-106", "MÓDULO": "LOGÍSTICA", "INDICADOR": "Proveedores Dic-25", "VALOR": "145 Registros", "SEVERIDAD": "NORMAL", "OBSERVACIÓN": "Tráfico alto estacional" },
+            { "ID": "FS-107", "MÓDULO": "CCTV", "INDICADOR": "D48: Bodega 20", "VALOR": "Cámara en Negro", "SEVERIDAD": "CRÍTICO", "OBSERVACIÓN": "Fallo físico de hardware" }
+        ];
+
+        let dataDinamicaActiva = [...dataDemoInicial];
+        let chartsInstanciados = {};
+
+        // Función para cambiar de Pestaña (Tab Switching)
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos de pestaña
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Quitar estilos activos de todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/10');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+            });
+
+            // Mostrar pestaña seleccionada
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            // Aplicar estilo activo al botón presionado
+            const btnActivo = document.getElementById(`btn-${tabId}`);
+            btnActivo.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-slate-200');
+            btnActivo.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/10');
+
+            // Actualizar título global de la cabecera
+            const titulos = {
+                'resumen': 'Resumen Ejecutivo',
+                'incidentes': 'Análisis de Incidentes (2025 - 2026)',
+                'logistica': 'Logística: Registro de Camiones y Proveedores',
+                'cctv': 'Infraestructura de CCTV y Estado de DVRs',
+                'preventivo': 'Hallazgos Preventivos y Medidas Disuasivas',
+                'dinamico': 'Interactive Data Center & Analítico XLSX'
+            };
+            document.getElementById('page-title').innerText = titulos[tabId] || 'Dashboard';
+        }
+
+        // Inicialización de Gráficos con Chart.js
+        function inicializarGraficos() {
+            // Destruir gráficos previos si existen para evitar solapamientos
+            Object.values(chartsInstanciados).forEach(chart => chart.destroy());
+
+            const ctxIncidentes = document.getElementById('chartIncidentes').getContext('2d');
+            chartsInstanciados.incidentes = new Chart(ctxIncidentes, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Incendio', 'Ambulancia', 'Alarmas', 'Robos', 'Objetos Encontrados'],
+                    datasets: [{
+                        data: [1, 3, 3, 1, 2],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#6366f1', '#ec4899', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '75%'
+                }
+            });
+
+            const ctxCamiones = document.getElementById('chartCamiones').getContext('2d');
+            chartsInstanciados.camiones = new Chart(ctxCamiones, {
+                type: 'line',
+                data: {
+                    labels: ['Nov 25', 'Dic 25', 'Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26'],
+                    datasets: [{
+                        label: 'Ingresos',
+                        data: [183, 197, 181, 177, 185, 155, 149],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            const ctxProveedores = document.getElementById('chartProveedores').getContext('2d');
+            chartsInstanciados.proveedores = new Chart(ctxProveedores, {
+                type: 'bar',
+                data: {
+                    labels: ['Dic 25', 'Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26'],
+                    datasets: [{
+                        label: 'Proveedores',
+                        data: [145, 141, 129, 132, 137, 123],
+                        backgroundColor: '#22d3ee',
+                        borderRadius: 4,
+                        barThickness: 16
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            const ctxCCTVGlobal = document.getElementById('chartCCTVGlobal').getContext('2d');
+            chartsInstanciados.cctvGlobal = new Chart(ctxCCTVGlobal, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Operativas', 'Fuera de Servicio'],
+                    datasets: [{
+                        data: [51, 40],
+                        backgroundColor: ['#10b981', '#f43f5e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '75%'
+                }
+            });
+        }
+
+        // Renderizado Dinámico de la Tabla Interactiva
+        function renderizarTablaDinamica(rows) {
+            const head = document.getElementById('tablaDinamicaHead');
+            const body = document.getElementById('tablaDinamicaBody');
+            const contador = document.getElementById('contadorFilas');
+
+            if (rows.length === 0) {
+                head.innerHTML = `<tr><th class="py-3 px-4">Mensaje</th></tr>`;
+                body.innerHTML = `<tr><td class="py-4 px-4 text-slate-500 italic text-center">Ningún dato coincide con los filtros aplicados.</td></tr>`;
+                contador.innerText = "Mostrando 0 registros";
+                return;
+            }
+
+            // Extraer las llaves/columnas automáticamente
+            const columnas = Object.keys(rows[0]);
+            
+            // Construir Cabecera
+            let headHTML = '<tr>';
+            columnas.forEach(col => {
+                headHTML += `<th class="py-2.5 px-4 font-semibold tracking-wider">${col}</th>`;
+            });
+            headHTML += '</tr>';
+            head.innerHTML = headHTML;
+
+            // Construir Cuerpo de Celdas
+            let bodyHTML = '';
+            rows.forEach(row => {
+                bodyHTML += `<tr class="hover:bg-slate-900/40 transition-all border-b border-slate-900">`;
+                columnas.forEach(col => {
+                    let val = row[col] || '';
+                    // Resaltado de tags especiales para visualización BI premium
+                    if (val === 'CRÍTICO' || val === 'No Operativa') {
+                        bodyHTML += `<td class="py-2 px-4"><span class="px-2 py-0.5 bg-rose-500/10 text-rose-400 font-semibold rounded text-[10px]">${val}</span></td>`;
+                    } else if (val === 'NORMAL' || val === 'Operativa' || val === 'Estable') {
+                        bodyHTML += `<td class="py-2 px-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 font-semibold rounded text-[10px]">${val}</span></td>`;
+                    } else if (col === 'MÓDULO') {
+                        bodyHTML += `<td class="py-2 px-4 text-indigo-400 font-medium">${val}</td>`;
+                    } else {
+                        bodyHTML += `<td class="py-2 px-4 text-slate-300">${val}</td>`;
+                    }
+                });
+                bodyHTML += '</tr>';
+            });
+            body.innerHTML = bodyHTML;
+            contador.innerText = `Mostrando ${rows.length} registros`;
+        }
+
+        // Motor de Filtrado Cruzado Dinámico (Búsqueda global + Selectores)
+        function aplicarFiltrosDinamicos() {
+            const query = document.getElementById('busquedaGlobal').value.toLowerCase();
+            const mod = document.getElementById('filtroModulo').value;
+            const sev = document.getElementById('filtroSeveridad').value;
+
+            const datosFiltrados = dataDinamicaActiva.filter(row => {
+                // Filtro Módulo
+                if (mod !== 'TODOS' && row['MÓDULO'] !== mod) return false;
+                // Filtro Severidad
+                if (sev !== 'TODOS' && row['SEVERIDAD'] !== sev) return false;
+                // Búsqueda de Texto
+                if (query) {
+                    const matchText = Object.values(row).some(val => String(val).toLowerCase().includes(query));
+                    if (!matchText) return false;
+                }
+                return true;
+            });
+
+            renderizarTablaDinamica(datosFiltrados);
+        }
+
+        // Cargador de Archivos XLSX / CSV sin refrescar pantalla
+        function procesarArchivo(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const primeraPestañaName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[primeraPestañaName];
+                
+                // Convertir a JSON nativo de objetos estructurados
+                const json = XLSX.utils.sheet_to_json(worksheet);
+
+                if (json.length > 0) {
+                    dataDinamicaActiva = json;
+                    // Auto-poblar filtros selectores con las nuevas columnas si es aplicable o resetearlos
+                    document.getElementById('busquedaGlobal').value = '';
+                    document.getElementById('filtroModulo').innerHTML = `<option value="TODOS">Módulo: Todos</option>`;
+                    document.getElementById('filtroSeveridad').innerHTML = `<option value="TODOS">Severidad: Todas</option>`;
+                    
+                    // Si el archivo trae las columnas estándar, mantener capacidades de filtros avanzados
+                    if(json[0]['MÓDULO']) {
+                        const modulosUnicos = [...new Set(json.map(item => item['MÓDULO']))];
+                        modulosUnicos.forEach(m => {
+                            if(m) document.getElementById('filtroModulo').innerHTML += `<option value="${m}">${m}</option>`;
+                        });
+                    }
+                    if(json[0]['SEVERIDAD']) {
+                        const sevUnicas = [...new Set(json.map(item => item['SEVERIDAD']))];
+                        sevUnicas.forEach(s => {
+                            if(s) document.getElementById('filtroSeveridad').innerHTML += `<option value="${s}">${s}</option>`;
+                        });
+                    }
+
+                    renderizarTablaDinamica(dataDinamicaActiva);
+                    alert("¡Archivo procesado con éxito! Los datos del centro interactivo se han actualizado.");
+                } else {
+                    alert("El archivo cargado no contiene registros válidos.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function resetearDataDinamica() {
+            dataDinamicaActiva = [...dataDemoInicial];
+            document.getElementById('busquedaGlobal').value = '';
+            document.getElementById('filtroModulo').value = 'TODOS';
+            document.getElementById('filtroSeveridad').value = 'TODOS';
+            renderizarTablaDinamica(dataDinamicaActiva);
+        }
+
+        // Descarga de Excel de la tabla interactiva actual
+        function exportarExcelDinamico() {
+            const worksheet = XLSX.utils.json_to_sheet(dataDinamicaActiva);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Data_Filtrada");
+            XLSX.writeFile(workbook, "Faith_Security_BI_Export.xlsx");
+        }
+
+        // Descarga unificado Excel con la estructura fija de la presentación (Consolidado)
+        function exportarExcelEstatico() {
+            const wb = XLSX.utils.book_new();
+            
+            // Pestaña 1: Resumen e Incidentes
+            const dataResumen = [
+                ["Métrica Operacional", "Valor Consolidado", "Detalle Adicional"],
+                ["Guardias Totales", 8, "100% Dotación Completa"],
+                ["Rondas Diarias", 8, "4 Turno Día / 4 Turno Noche"],
+                ["Bodycams Activas", 4, "Uso disuasivo obligatorio"],
+                ["Cámaras Operativas", 51, "56% de disponibilidad"],
+                ["Cámaras Fuera de Servicio", 40, "44% tasa de fallo físico/red"],
+                [],
+                ["Categoría Incidente", "Gestión 2025", "Gestión 2026", "Total General"],
+                ["Incendio", 0, 1, 1],
+                ["Ambulancia", 1, 2, 3],
+                ["Alarmas", 1, 2, 3],
+                ["Robos", 0, 1, 1],
+                ["Objetos Encontrados", 0, 2, 2]
+            ];
+            const wsResumen = XLSX.utils.aoa_to_sheet(dataResumen);
+            XLSX.utils.book_append_sheet(wb, wsResumen, "Resumen_y_Incidentes");
+
+            // Pestaña 2: Logística
+            const dataLog = [
+                ["Mes", "Registro de Camiones", "Registro Proveedores", "Estado Tráfico"],
+                ["Nov-25", 183, 145, "Alto"],
+                ["Dic-25", 197, 145, "Alto"],
+                ["Ene-26", 181, 141, "Estable"],
+                ["Feb-26", 177, 129, "Baja"],
+                ["Mar-26", 185, 132, "Normal"],
+                ["Abr-26", 155, 137, "Subida"],
+                ["May-26", 149, 123, "Actual"]
+            ];
+            const wsLog = XLSX.utils.aoa_to_sheet(dataLog);
+            XLSX.utils.book_append_sheet(wb, wsLog, "Flujos_Logistica");
+
+            XLSX.writeFile(wb, "Reporte_Seguridad_Faith_Security_Master.xlsx");
+        }
+
+        // Carga Automática inicial
+        window.addEventListener('DOMContentLoaded', () => {
+            inicializarGraficos();
+            renderizarTablaDinamica(dataDinamicaActiva);
+        });
+    </script>
+</body>
+</html>
